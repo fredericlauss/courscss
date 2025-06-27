@@ -200,7 +200,6 @@
   }
 }
 
-/* Animation de suppression */
 .task-item {
   &.removing {
     animation: slideOutLeft 0.3s ease-out forwards;
@@ -214,7 +213,6 @@
   }
 }
 
-/* Responsive design */
 @media (max-width: 768px) {
   .task-item {
     padding: 0.75rem;

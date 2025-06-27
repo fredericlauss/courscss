@@ -10,7 +10,6 @@ const TaskManager = () => {
   })
   const [editingTask, setEditingTask] = useState(null)
 
-  // Sauvegarder les tâches dans localStorage à chaque modification
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks))
   }, [tasks])
@@ -61,42 +60,46 @@ const TaskManager = () => {
         <p>Organisez vos tâches par catégorie</p>
       </header>
 
-      <TaskForm 
-        onAddTask={addTask}
-        onUpdateTask={updateTask}
-        editingTask={editingTask}
-        onCancelEdit={cancelEditing}
-      />
-
-      <div className="task-categories">
-        <div className="category-section">
-          <h2 className="category-title urgent">Urgent</h2>
-          <TaskList 
-            tasks={getTasksByCategory('Urgent')}
-            onDelete={deleteTask}
-            onToggleComplete={toggleTaskComplete}
-            onEdit={startEditing}
+      <div className="main-content">
+        <div className="form-section">
+          <TaskForm 
+            onAddTask={addTask}
+            onUpdateTask={updateTask}
+            editingTask={editingTask}
+            onCancelEdit={cancelEditing}
           />
         </div>
 
-        <div className="category-section">
-          <h2 className="category-title work">Travail</h2>
-          <TaskList 
-            tasks={getTasksByCategory('Travail')}
-            onDelete={deleteTask}
-            onToggleComplete={toggleTaskComplete}
-            onEdit={startEditing}
-          />
-        </div>
+        <div className="task-categories">
+          <div className="category-section">
+            <h2 className="category-title urgent">Urgent</h2>
+            <TaskList 
+              tasks={getTasksByCategory('Urgent')}
+              onDelete={deleteTask}
+              onToggleComplete={toggleTaskComplete}
+              onEdit={startEditing}
+            />
+          </div>
 
-        <div className="category-section">
-          <h2 className="category-title personal">Personnel</h2>
-          <TaskList 
-            tasks={getTasksByCategory('Personnel')}
-            onDelete={deleteTask}
-            onToggleComplete={toggleTaskComplete}
-            onEdit={startEditing}
-          />
+          <div className="category-section">
+            <h2 className="category-title work">Travail</h2>
+            <TaskList 
+              tasks={getTasksByCategory('Travail')}
+              onDelete={deleteTask}
+              onToggleComplete={toggleTaskComplete}
+              onEdit={startEditing}
+            />
+          </div>
+
+          <div className="category-section">
+            <h2 className="category-title personal">Personnel</h2>
+            <TaskList 
+              tasks={getTasksByCategory('Personnel')}
+              onDelete={deleteTask}
+              onToggleComplete={toggleTaskComplete}
+              onEdit={startEditing}
+            />
+          </div>
         </div>
       </div>
     </div>
