@@ -39,7 +39,13 @@ const TaskItem = ({ task, onDelete, onEdit, onMoveTask, currentStatus }) => {
     if (!dueDate) return false
     const today = new Date()
     const due = new Date(dueDate)
-    return due.setHours(0, 0, 0, 0) < today.setHours(0, 0, 0, 0)
+    
+    // Normaliser les dates à minuit pour comparer seulement les jours
+    const todayNormalized = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+    const dueNormalized = new Date(due.getFullYear(), due.getMonth(), due.getDate())
+    
+    // En retard si la date limite est aujourd'hui ou avant
+    return dueNormalized <= todayNormalized
   }
 
   const isDueSoon = (dueDate) => {
