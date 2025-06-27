@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Calendar, ChevronDown, ChevronUp } from 'lucide-react'
+import { Calendar, ChevronDown, ChevronUp, Filter } from 'lucide-react'
 import TaskForm from './TaskForm'
 import TaskList from './TaskList'
 import './TaskManager.css'
@@ -11,6 +11,7 @@ const TaskManager = () => {
   })
   const [editingTask, setEditingTask] = useState(null)
   const [sortOrder, setSortOrder] = useState('asc')
+  const [activeFilter, setActiveFilter] = useState('all') 
 
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks))
@@ -20,7 +21,7 @@ const TaskManager = () => {
     const newTask = {
       id: Date.now(),
       ...task,
-      status: 'backlog', // Nouvelle tâche = backlog
+      status: 'backlog',
       completed: false,
       createdAt: new Date().toISOString()
     }
@@ -57,6 +58,11 @@ const TaskManager = () => {
   const getTasksByStatus = (status) => {
     let statusTasks = tasks.filter(task => task.status === status)
     
+    // Appliquer le filtre par catégorie
+    if (activeFilter !== 'all') {
+      statusTasks = statusTasks.filter(task => task.category === activeFilter)
+    }
+    
     statusTasks = statusTasks.sort((a, b) => {
       if (!a.dueDate && !b.dueDate) return 0
       if (!a.dueDate) return 1
@@ -89,20 +95,69 @@ const TaskManager = () => {
       : 'Passer au tri croissant (plus proche en premier)'
   }
 
+  const getFilterButtonClass = (filter) => {
+    return `filter-btn ${activeFilter === filter ? 'active' : ''}`
+  }
+
+  const getFilterButtonTitle = (filter) => {
+    if (filter === 'all') return 'Afficher toutes les catégories'
+    return `Filtrer par ${filter}`
+  }
+
   return (
     <div className="task-manager">
       <header className="task-manager-header">
         <h1>Gestionnaire de Tâches</h1>
         <p>Organisez vos tâches par statut</p>
-        <button 
-          className={`sort-btn ${sortOrder === 'asc' ? 'asc' : 'desc'}`}
-          onClick={toggleSort}
-          title={getSortButtonTitle()}
-        >
-          <Calendar size={16} />
-          {getSortButtonText()}
-          {getSortButtonIcon()}
-        </button>
+        
+        <div className="header-controls">
+          <div className="filter-controls">
+            <div className="filter-label">
+              <Filter size={16} />
+              <span>Filtres :</span>
+            </div>
+            <div className="filter-buttons">
+              <button
+                className={getFilterButtonClass('all')}
+                onClick={() => setActiveFilter('all')}
+                title={getFilterButtonTitle('all')}
+              >
+                Toutes
+              </button>
+              <button
+                className={getFilterButtonClass('Travail')}
+                onClick={() => setActiveFilter('Travail')}
+                title={getFilterButtonTitle('Travail')}
+              >
+                Travail
+              </button>
+              <button
+                className={getFilterButtonClass('Personnel')}
+                onClick={() => setActiveFilter('Personnel')}
+                title={getFilterButtonTitle('Personnel')}
+              >
+                Personnel
+              </button>
+              <button
+                className={getFilterButtonClass('Urgent')}
+                onClick={() => setActiveFilter('Urgent')}
+                title={getFilterButtonTitle('Urgent')}
+              >
+                Urgent
+              </button>
+            </div>
+          </div>
+          
+          <button 
+            className={`sort-btn ${sortOrder === 'asc' ? 'asc' : 'desc'}`}
+            onClick={toggleSort}
+            title={getSortButtonTitle()}
+          >
+            <Calendar size={16} />
+            {getSortButtonText()}
+            {getSortButtonIcon()}
+          </button>
+        </div>
       </header>
 
       <div className="main-content">
