@@ -265,7 +265,6 @@
   top: 0.75rem;
   right: 0.75rem;
   display: flex;
-  flex-direction: column;
   gap: 0.5rem;
   opacity: 0;
   transition: var(--transition);

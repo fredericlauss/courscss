@@ -68,41 +68,51 @@ const TaskItem = ({ task, onDelete, onEdit, onMoveTask, currentStatus }) => {
   const getMoveButtons = () => {
     const buttons = []
     
-    if (currentStatus !== 'backlog') {
+    if (currentStatus === 'en-cours') {
       buttons.push(
         <button
           key="move-backlog"
           className="move-btn move-backlog"
           onClick={() => onMoveTask(task.id, 'backlog')}
-          title="Déplacer vers Backlog"
+          title="Retourner au Backlog"
+        >
+          ⬅️
+        </button>
+      )
+    } else if (currentStatus === 'fini') {
+      buttons.push(
+        <button
+          key="move-progress"
+          className="move-btn move-progress"
+          onClick={() => onMoveTask(task.id, 'en-cours')}
+          title="Remettre en cours"
         >
           ⬅️
         </button>
       )
     }
     
-    if (currentStatus !== 'en-cours') {
+    // Bouton étape suivante
+    if (currentStatus === 'backlog') {
       buttons.push(
         <button
           key="move-progress"
           className="move-btn move-progress"
           onClick={() => onMoveTask(task.id, 'en-cours')}
-          title="Déplacer vers En cours"
+          title="Commencer la tâche"
         >
           ➡️
         </button>
       )
-    }
-    
-    if (currentStatus !== 'fini') {
+    } else if (currentStatus === 'en-cours') {
       buttons.push(
         <button
           key="move-done"
           className="move-btn move-done"
           onClick={() => onMoveTask(task.id, 'fini')}
-          title="Marquer comme terminé"
+          title="Terminer la tâche"
         >
-          ✅
+          ➡️
         </button>
       )
     }
