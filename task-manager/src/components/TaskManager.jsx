@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Calendar, ChevronDown, ChevronUp } from 'lucide-react'
 import TaskForm from './TaskForm'
 import TaskList from './TaskList'
 import './TaskManager.css'
@@ -75,7 +76,11 @@ const TaskManager = () => {
   }
 
   const getSortButtonText = () => {
-    return sortOrder === 'asc' ? '📅 ↑ Croissant' : '📅 ↓ Décroissant'
+    return sortOrder === 'asc' ? 'Tri croissant' : 'Tri décroissant'
+  }
+
+  const getSortButtonIcon = () => {
+    return sortOrder === 'asc' ? <ChevronDown size={16} /> : <ChevronUp size={16} />
   }
 
   const getSortButtonTitle = () => {
@@ -94,7 +99,9 @@ const TaskManager = () => {
           onClick={toggleSort}
           title={getSortButtonTitle()}
         >
+          <Calendar size={16} />
           {getSortButtonText()}
+          {getSortButtonIcon()}
         </button>
       </header>
 

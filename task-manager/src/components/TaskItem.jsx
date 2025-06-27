@@ -1,3 +1,4 @@
+import { ChevronLeft, ChevronRight, Edit, Trash2 } from 'lucide-react'
 import './TaskItem.css'
 
 const TaskItem = ({ task, onDelete, onEdit, onMoveTask, currentStatus }) => {
@@ -76,7 +77,7 @@ const TaskItem = ({ task, onDelete, onEdit, onMoveTask, currentStatus }) => {
           onClick={() => onMoveTask(task.id, 'backlog')}
           title="Retourner au Backlog"
         >
-          ⬅️
+          <ChevronLeft size={16} />
         </button>
       )
     } else if (currentStatus === 'fini') {
@@ -87,12 +88,11 @@ const TaskItem = ({ task, onDelete, onEdit, onMoveTask, currentStatus }) => {
           onClick={() => onMoveTask(task.id, 'en-cours')}
           title="Remettre en cours"
         >
-          ⬅️
+          <ChevronLeft size={16} />
         </button>
       )
     }
     
-    // Bouton étape suivante
     if (currentStatus === 'backlog') {
       buttons.push(
         <button
@@ -101,7 +101,7 @@ const TaskItem = ({ task, onDelete, onEdit, onMoveTask, currentStatus }) => {
           onClick={() => onMoveTask(task.id, 'en-cours')}
           title="Commencer la tâche"
         >
-          ➡️
+          <ChevronRight size={16} />
         </button>
       )
     } else if (currentStatus === 'en-cours') {
@@ -112,7 +112,7 @@ const TaskItem = ({ task, onDelete, onEdit, onMoveTask, currentStatus }) => {
           onClick={() => onMoveTask(task.id, 'fini')}
           title="Terminer la tâche"
         >
-          ➡️
+          <ChevronRight size={16} />
         </button>
       )
     }
@@ -175,14 +175,14 @@ const TaskItem = ({ task, onDelete, onEdit, onMoveTask, currentStatus }) => {
             onClick={() => onEdit(task)}
             title="Modifier la tâche"
           >
-            ✏️
+            <Edit size={16} />
           </button>
           <button
             className="action-btn delete-btn"
             onClick={() => onDelete(task.id)}
             title="Supprimer la tâche"
           >
-            🗑️
+            <Trash2 size={16} />
           </button>
         </div>
       </div>
