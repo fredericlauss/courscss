@@ -123,14 +123,6 @@
     transform: translateY(-1px);
   }
   
-  &.asc {
-    border-left: 4px solid var(--success-color);
-  }
-  
-  &.desc {
-    border-left: 4px solid var(--warning-color);
-  }
-  
   @media (max-width: 768px) {
     align-self: center;
     padding: 0.5rem 1rem;
