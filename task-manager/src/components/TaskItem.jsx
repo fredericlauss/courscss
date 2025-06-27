@@ -1,6 +1,6 @@
 import './TaskItem.css'
 
-const TaskItem = ({ task, onDelete, onToggleComplete, onEdit }) => {
+const TaskItem = ({ task, onDelete, onEdit, onMoveTask, currentStatus }) => {
   const getPriorityColor = (priority) => {
     switch (priority) {
       case 'high':
@@ -11,6 +11,19 @@ const TaskItem = ({ task, onDelete, onToggleComplete, onEdit }) => {
         return 'priority-low'
       default:
         return 'priority-medium'
+    }
+  }
+
+  const getCategoryColor = (category) => {
+    switch (category) {
+      case 'Travail':
+        return 'category-work'
+      case 'Personnel':
+        return 'category-personal'
+      case 'Urgent':
+        return 'category-urgent'
+      default:
+        return 'category-work'
     }
   }
 
@@ -26,7 +39,6 @@ const TaskItem = ({ task, onDelete, onToggleComplete, onEdit }) => {
     if (!dueDate) return false
     const today = new Date()
     const due = new Date(dueDate)
-    // Comparer seulement les dates (sans heure)
     return due.setHours(0, 0, 0, 0) < today.setHours(0, 0, 0, 0)
   }
 
@@ -47,20 +59,55 @@ const TaskItem = ({ task, onDelete, onToggleComplete, onEdit }) => {
 
   const dueDateStatus = getDueDateStatus(task.dueDate)
 
+  const getMoveButtons = () => {
+    const buttons = []
+    
+    if (currentStatus !== 'backlog') {
+      buttons.push(
+        <button
+          key="move-backlog"
+          className="move-btn move-backlog"
+          onClick={() => onMoveTask(task.id, 'backlog')}
+          title="Déplacer vers Backlog"
+        >
+          ⬅️
+        </button>
+      )
+    }
+    
+    if (currentStatus !== 'en-cours') {
+      buttons.push(
+        <button
+          key="move-progress"
+          className="move-btn move-progress"
+          onClick={() => onMoveTask(task.id, 'en-cours')}
+          title="Déplacer vers En cours"
+        >
+          ➡️
+        </button>
+      )
+    }
+    
+    if (currentStatus !== 'fini') {
+      buttons.push(
+        <button
+          key="move-done"
+          className="move-btn move-done"
+          onClick={() => onMoveTask(task.id, 'fini')}
+          title="Marquer comme terminé"
+        >
+          ✅
+        </button>
+      )
+    }
+    
+    return buttons
+  }
+
   return (
     <div className={`task-item ${task.completed ? 'completed' : ''} ${dueDateStatus ? `due-${dueDateStatus}` : ''}`}>
       <div className="task-content">
         <div className="task-header">
-          <div className="task-checkbox">
-            <input
-              type="checkbox"
-              checked={task.completed}
-              onChange={() => onToggleComplete(task.id)}
-              id={`task-${task.id}`}
-            />
-            <label htmlFor={`task-${task.id}`} className="checkbox-label"></label>
-          </div>
-          
           <div className="task-title-section">
             <h4 className={`task-title ${task.completed ? 'completed' : ''}`}>
               {task.title}
@@ -69,6 +116,9 @@ const TaskItem = ({ task, onDelete, onToggleComplete, onEdit }) => {
               <span className={`priority-badge ${getPriorityColor(task.priority)}`}>
                 {task.priority === 'high' ? 'Haute' : 
                  task.priority === 'medium' ? 'Moyenne' : 'Basse'}
+              </span>
+              <span className={`category-badge ${getCategoryColor(task.category)}`}>
+                {task.category}
               </span>
               {dueDateStatus && (
                 <span className={`due-badge ${dueDateStatus}`}>
@@ -100,20 +150,25 @@ const TaskItem = ({ task, onDelete, onToggleComplete, onEdit }) => {
       </div>
 
       <div className="task-actions">
-        <button
-          className="action-btn edit-btn"
-          onClick={() => onEdit(task)}
-          title="Modifier la tâche"
-        >
-          ✏️
-        </button>
-        <button
-          className="action-btn delete-btn"
-          onClick={() => onDelete(task.id)}
-          title="Supprimer la tâche"
-        >
-          🗑️
-        </button>
+        <div className="move-actions">
+          {getMoveButtons()}
+        </div>
+        <div className="edit-actions">
+          <button
+            className="action-btn edit-btn"
+            onClick={() => onEdit(task)}
+            title="Modifier la tâche"
+          >
+            ✏️
+          </button>
+          <button
+            className="action-btn delete-btn"
+            onClick={() => onDelete(task.id)}
+            title="Supprimer la tâche"
+          >
+            🗑️
+          </button>
+        </div>
       </div>
     </div>
   )

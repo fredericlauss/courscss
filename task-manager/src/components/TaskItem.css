@@ -170,6 +170,31 @@
   }
 }
 
+.category-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  
+  &.category-work {
+    background-color: #dbeafe;
+    color: var(--primary-color);
+  }
+  
+  &.category-personal {
+    background-color: #f0fdf4;
+    color: var(--success-color);
+  }
+  
+  &.category-urgent {
+    background-color: #fef2f2;
+    color: var(--danger-color);
+  }
+}
+
 .due-badge {
   display: inline-block;
   padding: 0.25rem 0.5rem;
@@ -240,6 +265,7 @@
   top: 0.75rem;
   right: 0.75rem;
   display: flex;
+  flex-direction: column;
   gap: 0.5rem;
   opacity: 0;
   transition: var(--transition);
@@ -247,6 +273,44 @@
 
 .task-item:hover .task-actions {
   opacity: 1;
+}
+
+.move-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.move-btn {
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 0.875rem;
+  line-height: 1;
+  
+  &:hover {
+    background-color: var(--border-color);
+    transform: scale(1.1);
+  }
+  
+  &.move-backlog:hover {
+    background-color: #e2e8f0;
+  }
+  
+  &.move-progress:hover {
+    background-color: #dbeafe;
+  }
+  
+  &.move-done:hover {
+    background-color: #dcfce7;
+  }
+}
+
+.edit-actions {
+  display: flex;
+  gap: 0.25rem;
 }
 
 .action-btn {
@@ -309,6 +373,7 @@
   }
   
   .priority-badge,
+  .category-badge,
   .due-badge {
     font-size: 0.7rem;
     padding: 0.2rem 0.4rem;
@@ -318,9 +383,16 @@
     position: static;
     opacity: 1;
     margin-top: 0.75rem;
-    justify-content: flex-end;
+    flex-direction: row;
+    justify-content: space-between;
   }
   
+  .move-actions,
+  .edit-actions {
+    gap: 0.5rem;
+  }
+  
+  .move-btn,
   .action-btn {
     padding: 0.5rem;
     font-size: 1.125rem;

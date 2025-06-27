@@ -9,7 +9,7 @@ const TaskManager = () => {
     return savedTasks ? JSON.parse(savedTasks) : []
   })
   const [editingTask, setEditingTask] = useState(null)
-  const [sortOrder, setSortOrder] = useState('asc') 
+  const [sortOrder, setSortOrder] = useState('asc')
 
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks))
@@ -19,6 +19,7 @@ const TaskManager = () => {
     const newTask = {
       id: Date.now(),
       ...task,
+      status: 'backlog', // Nouvelle tâche = backlog
       completed: false,
       createdAt: new Date().toISOString()
     }
@@ -36,9 +37,11 @@ const TaskManager = () => {
     setTasks(tasks.filter(task => task.id !== taskId))
   }
 
-  const toggleTaskComplete = (taskId) => {
-    setTasks(tasks.map(task =>
-      task.id === taskId ? { ...task, completed: !task.completed } : task
+  const moveTask = (taskId, newStatus) => {
+    setTasks(tasks.map(task => 
+      task.id === taskId 
+        ? { ...task, status: newStatus, completed: newStatus === 'fini' }
+        : task
     ))
   }
 
@@ -50,10 +53,10 @@ const TaskManager = () => {
     setEditingTask(null)
   }
 
-  const getTasksByCategory = (category) => {
-    let categoryTasks = tasks.filter(task => task.category === category)
+  const getTasksByStatus = (status) => {
+    let statusTasks = tasks.filter(task => task.status === status)
     
-    categoryTasks = categoryTasks.sort((a, b) => {
+    statusTasks = statusTasks.sort((a, b) => {
       if (!a.dueDate && !b.dueDate) return 0
       if (!a.dueDate) return 1
       if (!b.dueDate) return -1
@@ -64,7 +67,7 @@ const TaskManager = () => {
       return sortOrder === 'asc' ? dateA - dateB : dateB - dateA
     })
     
-    return categoryTasks
+    return statusTasks
   }
 
   const toggleSort = () => {
@@ -85,7 +88,7 @@ const TaskManager = () => {
     <div className="task-manager">
       <header className="task-manager-header">
         <h1>Gestionnaire de Tâches</h1>
-        <p>Organisez vos tâches par catégorie</p>
+        <p>Organisez vos tâches par statut</p>
         <button 
           className={`sort-btn ${sortOrder === 'asc' ? 'asc' : 'desc'}`}
           onClick={toggleSort}
@@ -105,34 +108,37 @@ const TaskManager = () => {
           />
         </div>
 
-        <div className="task-categories">
-          <div className="category-section">
-            <h2 className="category-title urgent">Urgent</h2>
+        <div className="task-statuses">
+          <div className="status-section">
+            <h2 className="status-title backlog">Backlog</h2>
             <TaskList 
-              tasks={getTasksByCategory('Urgent')}
+              tasks={getTasksByStatus('backlog')}
               onDelete={deleteTask}
-              onToggleComplete={toggleTaskComplete}
               onEdit={startEditing}
+              onMoveTask={moveTask}
+              currentStatus="backlog"
             />
           </div>
 
-          <div className="category-section">
-            <h2 className="category-title work">Travail</h2>
+          <div className="status-section">
+            <h2 className="status-title in-progress">En cours</h2>
             <TaskList 
-              tasks={getTasksByCategory('Travail')}
+              tasks={getTasksByStatus('en-cours')}
               onDelete={deleteTask}
-              onToggleComplete={toggleTaskComplete}
               onEdit={startEditing}
+              onMoveTask={moveTask}
+              currentStatus="en-cours"
             />
           </div>
 
-          <div className="category-section">
-            <h2 className="category-title personal">Personnel</h2>
+          <div className="status-section">
+            <h2 className="status-title done">Fini</h2>
             <TaskList 
-              tasks={getTasksByCategory('Personnel')}
+              tasks={getTasksByStatus('fini')}
               onDelete={deleteTask}
-              onToggleComplete={toggleTaskComplete}
               onEdit={startEditing}
+              onMoveTask={moveTask}
+              currentStatus="fini"
             />
           </div>
         </div>

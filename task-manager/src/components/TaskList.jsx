@@ -1,11 +1,11 @@
 import TaskItem from './TaskItem'
 import './TaskList.css'
 
-const TaskList = ({ tasks, onDelete, onToggleComplete, onEdit }) => {
+const TaskList = ({ tasks, onDelete, onEdit, onMoveTask, currentStatus }) => {
   if (tasks.length === 0) {
     return (
       <div className="task-list empty">
-        <p>Aucune tâche dans cette catégorie</p>
+        <p>Aucune tâche dans cette colonne</p>
       </div>
     )
   }
@@ -17,8 +17,9 @@ const TaskList = ({ tasks, onDelete, onToggleComplete, onEdit }) => {
           key={task.id}
           task={task}
           onDelete={onDelete}
-          onToggleComplete={onToggleComplete}
           onEdit={onEdit}
+          onMoveTask={onMoveTask}
+          currentStatus={currentStatus}
         />
       ))}
     </div>
