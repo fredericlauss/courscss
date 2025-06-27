@@ -9,6 +9,7 @@ const TaskManager = () => {
     return savedTasks ? JSON.parse(savedTasks) : []
   })
   const [editingTask, setEditingTask] = useState(null)
+  const [sortOrder, setSortOrder] = useState('asc') 
 
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks))
@@ -50,7 +51,34 @@ const TaskManager = () => {
   }
 
   const getTasksByCategory = (category) => {
-    return tasks.filter(task => task.category === category)
+    let categoryTasks = tasks.filter(task => task.category === category)
+    
+    categoryTasks = categoryTasks.sort((a, b) => {
+      if (!a.dueDate && !b.dueDate) return 0
+      if (!a.dueDate) return 1
+      if (!b.dueDate) return -1
+      
+      const dateA = new Date(a.dueDate)
+      const dateB = new Date(b.dueDate)
+      
+      return sortOrder === 'asc' ? dateA - dateB : dateB - dateA
+    })
+    
+    return categoryTasks
+  }
+
+  const toggleSort = () => {
+    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')
+  }
+
+  const getSortButtonText = () => {
+    return sortOrder === 'asc' ? '📅 ↑ Croissant' : '📅 ↓ Décroissant'
+  }
+
+  const getSortButtonTitle = () => {
+    return sortOrder === 'asc' 
+      ? 'Passer au tri décroissant (plus lointain en premier)' 
+      : 'Passer au tri croissant (plus proche en premier)'
   }
 
   return (
@@ -58,6 +86,13 @@ const TaskManager = () => {
       <header className="task-manager-header">
         <h1>Gestionnaire de Tâches</h1>
         <p>Organisez vos tâches par catégorie</p>
+        <button 
+          className={`sort-btn ${sortOrder === 'asc' ? 'asc' : 'desc'}`}
+          onClick={toggleSort}
+          title={getSortButtonTitle()}
+        >
+          {getSortButtonText()}
+        </button>
       </header>
 
       <div className="main-content">
