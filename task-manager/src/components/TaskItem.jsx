@@ -18,14 +18,37 @@ const TaskItem = ({ task, onDelete, onToggleComplete, onEdit }) => {
     return new Date(dateString).toLocaleDateString('fr-FR', {
       day: '2-digit',
       month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      year: 'numeric'
     })
   }
 
+  const isOverdue = (dueDate) => {
+    if (!dueDate) return false
+    const today = new Date()
+    const due = new Date(dueDate)
+    // Comparer seulement les dates (sans heure)
+    return due.setHours(0, 0, 0, 0) < today.setHours(0, 0, 0, 0)
+  }
+
+  const isDueSoon = (dueDate) => {
+    if (!dueDate) return false
+    const today = new Date()
+    const due = new Date(dueDate)
+    const diffInDays = Math.ceil((due.setHours(0, 0, 0, 0) - today.setHours(0, 0, 0, 0)) / (1000 * 60 * 60 * 24))
+    return diffInDays > 0 && diffInDays <= 3
+  }
+
+  const getDueDateStatus = (dueDate) => {
+    if (!dueDate) return null
+    if (isOverdue(dueDate)) return 'overdue'
+    if (isDueSoon(dueDate)) return 'due-soon'
+    return 'normal'
+  }
+
+  const dueDateStatus = getDueDateStatus(task.dueDate)
+
   return (
-    <div className={`task-item ${task.completed ? 'completed' : ''}`}>
+    <div className={`task-item ${task.completed ? 'completed' : ''} ${dueDateStatus ? `due-${dueDateStatus}` : ''}`}>
       <div className="task-content">
         <div className="task-header">
           <div className="task-checkbox">
@@ -42,10 +65,18 @@ const TaskItem = ({ task, onDelete, onToggleComplete, onEdit }) => {
             <h4 className={`task-title ${task.completed ? 'completed' : ''}`}>
               {task.title}
             </h4>
-            <span className={`priority-badge ${getPriorityColor(task.priority)}`}>
-              {task.priority === 'high' ? 'Haute' : 
-               task.priority === 'medium' ? 'Moyenne' : 'Basse'}
-            </span>
+            <div className="task-badges">
+              <span className={`priority-badge ${getPriorityColor(task.priority)}`}>
+                {task.priority === 'high' ? 'Haute' : 
+                 task.priority === 'medium' ? 'Moyenne' : 'Basse'}
+              </span>
+              {dueDateStatus && (
+                <span className={`due-badge ${dueDateStatus}`}>
+                  {dueDateStatus === 'overdue' ? 'En retard' : 
+                   dueDateStatus === 'due-soon' ? 'Bientôt due' : 'À temps'}
+                </span>
+              )}
+            </div>
           </div>
         </div>
 
@@ -59,6 +90,12 @@ const TaskItem = ({ task, onDelete, onToggleComplete, onEdit }) => {
           <span className="task-date">
             Créée le {formatDate(task.createdAt)}
           </span>
+          {task.dueDate && (
+            <span className={`task-due-date ${dueDateStatus}`}>
+              {dueDateStatus === 'overdue' ? 'Échue le ' : 'Due le '}
+              {formatDate(task.dueDate)}
+            </span>
+          )}
         </div>
       </div>
 

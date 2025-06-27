@@ -6,7 +6,8 @@ const TaskForm = ({ onAddTask, onUpdateTask, editingTask, onCancelEdit }) => {
     title: '',
     description: '',
     category: 'Travail',
-    priority: 'medium'
+    priority: 'medium',
+    dueDate: ''
   })
 
   useEffect(() => {
@@ -15,14 +16,16 @@ const TaskForm = ({ onAddTask, onUpdateTask, editingTask, onCancelEdit }) => {
         title: editingTask.title,
         description: editingTask.description,
         category: editingTask.category,
-        priority: editingTask.priority
+        priority: editingTask.priority,
+        dueDate: editingTask.dueDate || ''
       })
     } else {
       setFormData({
         title: '',
         description: '',
         category: 'Travail',
-        priority: 'medium'
+        priority: 'medium',
+        dueDate: ''
       })
     }
   }, [editingTask])
@@ -121,6 +124,17 @@ const TaskForm = ({ onAddTask, onUpdateTask, editingTask, onCancelEdit }) => {
             <option value="high">Haute</option>
           </select>
         </div>
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="dueDate">Date limite</label>
+        <input
+          type="date"
+          id="dueDate"
+          name="dueDate"
+          value={formData.dueDate}
+          onChange={handleChange}
+        />
       </div>
 
       <button type="submit" className="submit-btn">
